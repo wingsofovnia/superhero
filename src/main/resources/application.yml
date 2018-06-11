@@ -1,0 +1,16 @@
+spring:
+  application.name: payworks-superhero
+  profiles.active: dev
+
+logging:
+  file: application.log
+
+---
+
+spring:
+  profiles: dev
+
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+    default-property-inclusion: non_empty
+    serialization.write-dates-as-timestamps: false
