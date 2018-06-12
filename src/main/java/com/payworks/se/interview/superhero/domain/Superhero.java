@@ -15,7 +15,9 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import static org.apache.commons.lang3.Validate.notBlank;
@@ -41,11 +43,13 @@ public class Superhero {
     @DBRef
     private final List<Superhero> allies = new ArrayList<>();
 
+    private final Set<String> skills = new HashSet<>();
+
     @NotNull
     private LocalDate dateOfBirth;
 
-    public Superhero(UUID id, @NotBlank String name, String pseudonym, @NotNull World world, List<Superhero> allies,
-                     @NotNull LocalDate dateOfBirth) {
+    public Superhero(UUID id, @NotBlank String name, String pseudonym, @NotNull World world,
+                     List<Superhero> allies, Set<String> skills, @NotNull LocalDate dateOfBirth) {
         this.id = notNull(id);
         this.name = notBlank(name);
         this.pseudonym = pseudonym;
@@ -55,23 +59,19 @@ public class Superhero {
         if (allies != null) {
             this.allies.addAll(allies);
         }
-    }
-    public Superhero(UUID id, @NotBlank String name, String pseudonym, @NotNull World world,
-                     @NotNull LocalDate dateOfBirth) {
-        this(id, name, pseudonym, world, null, dateOfBirth);
+
+        if (skills != null) {
+            this.skills.addAll(skills);
+        }
     }
 
-    public Superhero(@NotBlank String name, String pseudonym, @NotNull World world, List<Superhero> allies,
-                     @NotNull LocalDate dateOfBirth) {
-        this(UUID.randomUUID(), name, pseudonym, world, allies, dateOfBirth);
-    }
-
-    public Superhero(@NotBlank String name, String pseudonym, @NotNull World world, @NotNull LocalDate dateOfBirth) {
-        this(name, pseudonym, world, null, dateOfBirth);
+    public Superhero(@NotBlank String name, String pseudonym, @NotNull World world,
+                     List<Superhero> allies, Set<String> skills, @NotNull LocalDate dateOfBirth) {
+        this(UUID.randomUUID(), name, pseudonym, world, allies, skills, dateOfBirth);
     }
 
     public Superhero(@NotBlank String name, @NotNull World world, @NotNull LocalDate dateOfBirth) {
-        this(UUID.randomUUID(), name, null, world, null, dateOfBirth);
+        this(name, null, world, null, null, dateOfBirth);
     }
 
     public void name(String name) {
@@ -90,11 +90,11 @@ public class Superhero {
         return Collections.unmodifiableList(allies);
     }
 
-    public boolean addAlly(Superhero superhero) {
+    public void addAlly(Superhero superhero) {
         if (id.equals(superhero.id))
             throw new IllegalArgumentException("A superhero cannot be an ally to him/her-self");
 
-        return allies.add(superhero);
+        allies.add(superhero);
     }
 
     public boolean removeAlly(Superhero superhero) {
@@ -103,5 +103,17 @@ public class Superhero {
 
     public boolean removeAlly(UUID superheroId) {
         return allies.removeIf(a -> a.id.equals(superheroId));
+    }
+
+    public Set<String> skills() {
+        return Collections.unmodifiableSet(skills);
+    }
+
+    public void addSkill(String skill) {
+        skills.add(skill);
+    }
+
+    public boolean removeSkill(String skill) {
+        return skills.remove(skill);
     }
 }

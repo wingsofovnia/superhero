@@ -10,6 +10,7 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 import java.util.UUID;
 
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -30,9 +31,10 @@ public class SuperheroMapper {
         val pseudonym = entity.pseudonym();
         val world = entity.world();
         val allies = entity.allies().stream().map(Superhero::id).map(UUID::toString).collect(toList());
+        val skills = entity.skills();
         val dateOfBirth = entity.dateOfBirth();
 
-        return new SuperheroData(id, name, pseudonym, world, allies, dateOfBirth);
+        return new SuperheroData(id, name, pseudonym, world, allies, skills, dateOfBirth);
     }
 
     public Mono<Superhero> toEntity(SuperheroData dto) {
@@ -41,16 +43,17 @@ public class SuperheroMapper {
         val pseudonym = dto.getPseudonym();
         val world = dto.getWorld();
         val dateOfBirth = dto.getDateOfBirth();
+        val alliesFlux = superheroesFromRawIds(dto.getAllies());
+        val skills = dto.getSkills();
 
-        if (dto.getAllies() == null) {
-            return Mono.just(new Superhero(id, name, pseudonym, world, dateOfBirth));
-        } else {
-            val alliesFlux = superheroesFromRawIds(dto.getAllies());
-            return alliesFlux.map(allies -> new Superhero(id, name, pseudonym, world, allies, dateOfBirth));
-        }
+        return alliesFlux.map(allies -> new Superhero(id, name, pseudonym, world, allies, skills, dateOfBirth));
     }
 
     private Mono<List<Superhero>> superheroesFromRawIds(List<String> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return Mono.just(emptyList());
+        }
+
         return repository.findAllById(ids.stream()
             .map(UUID::fromString)
             .collect(toSet()))

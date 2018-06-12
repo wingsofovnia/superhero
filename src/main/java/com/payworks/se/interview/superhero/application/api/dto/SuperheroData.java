@@ -12,6 +12,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @ToString @EqualsAndHashCode
@@ -30,6 +31,8 @@ public class SuperheroData {
     private final World world;
 
     private final List<String> allies;
+
+    private final Set<String> skills;
 
     @NotNull
     private final LocalDate dateOfBirth;
