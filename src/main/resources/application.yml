@@ -14,3 +14,11 @@ spring:
     property-naming-strategy: SNAKE_CASE
     default-property-inclusion: non_empty
     serialization.write-dates-as-timestamps: false
+
+  data:
+    mongodb:
+      database: superhero
+      host: localhost
+      port: 27017
+      repositories:
+        type: reactive

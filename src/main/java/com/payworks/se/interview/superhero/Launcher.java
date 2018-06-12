@@ -1,4 +1,4 @@
-package com.payworks.se.interview.superhero.application;
+package com.payworks.se.interview.superhero;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
