@@ -25,27 +25,27 @@ public class SuperheroMapper {
     }
 
     public SuperheroData fromEntity(Superhero entity) {
-        return SuperheroData.builder()
-            .id(entity.toString())
-            .name(entity.name())
-            .pseudonym(entity.pseudonym())
-            .world(entity.world())
-            .allies(entity.allies().stream().map(Superhero::id).map(UUID::toString).collect(toList()))
-            .dateOfBirth(entity.dateOfBirth())
-            .build();
+        val id = entity.id().toString();
+        val name = entity.name();
+        val pseudonym = entity.pseudonym();
+        val world = entity.world();
+        val allies = entity.allies().stream().map(Superhero::id).map(UUID::toString).collect(toList());
+        val dateOfBirth = entity.dateOfBirth();
+
+        return new SuperheroData(id, name, pseudonym, world, allies, dateOfBirth);
     }
 
     public Mono<Superhero> toEntity(SuperheroData dto) {
-        val id = isBlank(dto.id()) ? UUID.randomUUID() : UUID.fromString(dto.id());
-        val name = dto.name();
-        val pseudonym = dto.pseudonym();
-        val world = dto.world();
-        val dateOfBirth = dto.dateOfBirth();
+        val id = isBlank(dto.getId()) ? UUID.randomUUID() : UUID.fromString(dto.getId());
+        val name = dto.getName();
+        val pseudonym = dto.getPseudonym();
+        val world = dto.getWorld();
+        val dateOfBirth = dto.getDateOfBirth();
 
-        if (dto.allies() == null) {
+        if (dto.getAllies() == null) {
             return Mono.just(new Superhero(id, name, pseudonym, world, dateOfBirth));
         } else {
-            val alliesFlux = superheroesFromRawIds(dto.allies());
+            val alliesFlux = superheroesFromRawIds(dto.getAllies());
             return alliesFlux.map(allies -> new Superhero(id, name, pseudonym, world, allies, dateOfBirth));
         }
     }

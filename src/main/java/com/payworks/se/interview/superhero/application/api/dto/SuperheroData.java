@@ -1,16 +1,22 @@
 package com.payworks.se.interview.superhero.application.api.dto;
 
 import com.payworks.se.interview.superhero.domain.World;
-import lombok.Builder;
-import lombok.Data;
-import lombok.experimental.Accessors;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.List;
 
-@Builder @Data @Accessors(fluent = true)
+@Getter
+@ToString @EqualsAndHashCode
+@RequiredArgsConstructor
+@NoArgsConstructor(force = true, access = AccessLevel.PACKAGE)
 public class SuperheroData {
 
     private final String id;
