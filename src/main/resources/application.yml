@@ -7,6 +7,11 @@ spring:
     default-property-inclusion: non_empty
     serialization.write-dates-as-timestamps: false
 
+  data:
+    mongodb:
+      repositories:
+        type: reactive
+
 logging:
   file: application.log
 
@@ -15,14 +20,6 @@ logging:
 spring:
   profiles: dev
 
-  data:
-    mongodb:
-      database: superhero
-      host: localhost
-      port: 27017
-      repositories:
-        type: reactive
-
 ---
 
 spring:
@@ -30,9 +27,8 @@ spring:
 
   data:
     mongodb:
-      repositories:
-        type: reactive
       uri: mongodb+srv://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}/${DB_NAME}?retryWrites=true
+
   security:
     user:
       name: ${USR_NAME}
