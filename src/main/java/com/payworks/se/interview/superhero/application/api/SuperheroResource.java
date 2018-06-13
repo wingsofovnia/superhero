@@ -21,12 +21,12 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import javax.xml.ws.Response;
 import java.util.UUID;
 import java.util.function.Function;
 
 @Validated
 @RestController
-@Transactional(readOnly = true)
 @RequestMapping("/api/superheroes")
 public class SuperheroResource {
 
@@ -40,28 +40,26 @@ public class SuperheroResource {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public Flux<SuperheroData> listAllSuperheroes() {
-        return repository.findAll().map(mapper::fromEntity);
+    public Flux<SuperheroData> readAllSuperheroes() {
+        return repository.findAll().flatMap(mapper::fromEntity);
     }
 
     @GetMapping(path = "/{superheroId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<ResponseEntity<SuperheroData>> readOneSuperhero(@PathVariable UUID superheroId) {
         return repository.findById(superheroId)
-            .map(mapper::fromEntity)
+            .flatMap(mapper::fromEntity)
             .map(ResponseEntity::ok)
             .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 
-    @Transactional
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<ResponseEntity<SuperheroData>> createSuperhero(@RequestBody SuperheroData superheroData) {
         return mapper.toEntity(superheroData)
-            .doOnSuccess(repository::save)
-            .map(mapper::fromEntity)
+            .flatMap(repository::save)
+            .flatMap(mapper::fromEntity)
             .map(dto -> new ResponseEntity<>(dto, HttpStatus.CREATED));
     }
 
-    @Transactional
     @DeleteMapping(path = "/{superheroId}")
     public Mono<ResponseEntity<Void>> deleteSuperhero(@PathVariable UUID superheroId) {
         return repository.existsById(superheroId)

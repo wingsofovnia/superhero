@@ -25,7 +25,7 @@ public class SuperheroMapper {
         this.repository = repository;
     }
 
-    public SuperheroData fromEntity(Superhero entity) {
+    public Mono<SuperheroData> fromEntity(Superhero entity) {
         val id = entity.id().toString();
         val name = entity.name();
         val pseudonym = entity.pseudonym();
@@ -34,7 +34,7 @@ public class SuperheroMapper {
         val skills = entity.skills();
         val dateOfBirth = entity.dateOfBirth();
 
-        return new SuperheroData(id, name, pseudonym, world, allies, skills, dateOfBirth);
+        return Mono.just(new SuperheroData(id, name, pseudonym, world, allies, skills, dateOfBirth));
     }
 
     public Mono<Superhero> toEntity(SuperheroData dto) {
