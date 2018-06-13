@@ -26,3 +26,13 @@ dependencies {
     testCompileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.0'
     testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.0.2.RELEASE'
 }
+
+task stage(type: Copy, dependsOn: [clean, assemble]) {
+    println(jar)
+    from jar.archivePath
+    into jar.destinationDir
+    rename {
+        'app.jar'
+    }
+}
+stage.mustRunAfter(clean)

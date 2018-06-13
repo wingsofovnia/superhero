@@ -22,4 +22,19 @@ public class SecurityConfigs {
                 .build();
         }
     }
+
+    @Configuration
+    @Profile("prod")
+    @EnableWebFluxSecurity
+    public static class ProdSecurityConfig {
+
+        @Bean
+        public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
+            return http.csrf().disable()
+                .authorizeExchange()
+                    .anyExchange().authenticated().and()
+                .httpBasic().and()
+                .build();
+        }
+    }
 }

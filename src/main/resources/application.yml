@@ -2,6 +2,11 @@ spring:
   application.name: payworks-superhero
   profiles.active: dev
 
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+    default-property-inclusion: non_empty
+    serialization.write-dates-as-timestamps: false
+
 logging:
   file: application.log
 
@@ -10,11 +15,6 @@ logging:
 spring:
   profiles: dev
 
-  jackson:
-    property-naming-strategy: SNAKE_CASE
-    default-property-inclusion: non_empty
-    serialization.write-dates-as-timestamps: false
-
   data:
     mongodb:
       database: superhero
@@ -22,3 +22,18 @@ spring:
       port: 27017
       repositories:
         type: reactive
+
+---
+
+spring:
+  profiles: prod
+
+  data:
+    mongodb:
+      repositories:
+        type: reactive
+      uri: mongodb+srv://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}/${DB_NAME}?retryWrites=true
+  security:
+    user:
+      name: ${USR_NAME}
+      password: ${USR_PASSWORD}
